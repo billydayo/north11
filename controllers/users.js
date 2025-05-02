@@ -131,7 +131,7 @@ async function postLogin (req, res, next) {
       status: 'success',
       data: {
         token,
-        user: {
+        user: { 
           name: existingUser.name
         }
       }

@@ -11,6 +11,7 @@ const dataSource = new DataSource({
   password: config.get('db.password'),
   database: config.get('db.database'),
   synchronize: config.get('db.synchronize'),
+  
   poolSize: 10,
   entities: [
     User

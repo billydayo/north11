@@ -16,7 +16,7 @@ dataSource.initialize()
   .then(() => {
     console.log('資料庫連線成功');
     app.listen(port, () => {
-      console.log(`伺服器已啟動在 http://localhost:${port}`);
+      console.log(`伺服器已啟動`);
     });
   })
   .catch((err) => {

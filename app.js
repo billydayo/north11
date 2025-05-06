@@ -23,6 +23,4 @@ dataSource.initialize()
     console.error('資料庫連線失敗', err);
   });
 
-app.listen(port)
-
 //module.exports = app

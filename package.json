@@ -25,6 +25,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
+  },
+  "engines":{
+    "node": "22.x"
   }
 }
-//可能要寫node版本//

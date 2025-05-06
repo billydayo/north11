@@ -15,7 +15,6 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "express-generator": "^4.16.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.15.6",
     "pino": "^9.6.0",
@@ -26,7 +25,7 @@
   "devDependencies": {
     "nodemon": "^3.1.9"
   },
-  "engines":{
+  "engines": {
     "node": "22.x"
   }
 }

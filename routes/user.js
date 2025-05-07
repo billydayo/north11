@@ -14,12 +14,12 @@ const auth = require('../middlewares/auth')({
 
 router.get('/', (req, res) => {
     res.status(200)
-    res.send('OK')
+    res.send('這是首頁')
   })
 
 router.get('/signup', (req, res) => {
     res.status(200)
-    res.send('signup')
+    res.send('這是登入畫面')
 })
 
 router.get('/:search', (req, res) => {

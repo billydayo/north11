@@ -5,7 +5,6 @@ const User = require('../entities/User')
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-migrations: ['../migrations/CreateUsersTable']
 /** 
 const dataSource = new DataSource({
   type: 'postgres',
@@ -31,7 +30,6 @@ let dataSourceOptions = {
   extra: {
     max: 10, // connection pool size
   },
-  migrations: ['../migrations'],
 };
 
 // 如果是在Render，使用 DATABASE_URL + SSL

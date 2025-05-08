@@ -4,7 +4,8 @@
   "main": "all.js",
   "scripts": {
     "start": "npm run migration:run && node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migration:run": "npx typeorm migration:run -d ./db/data-source.js"
   },
   "author": "billy",
   "license": "ISC",

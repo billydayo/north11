@@ -13,8 +13,10 @@ app.use('/api/users',user)
 const port = process.env.PORT || 8000;
 
 dataSource.initialize()
-  .then(() => {
+  .then(async () => {
     console.log('資料庫連線成功');
+    await dataSource.runMigrations();
+    console.log('Migration 執行完畢');
     app.listen(port, () => {
       console.log(`伺服器已啟動`);
     });

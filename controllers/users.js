@@ -5,6 +5,9 @@ const logger = require('../utils/logger')('UsersController');
 const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
 
+//const { jwt } = require('../config');
+//const jwtSecret = jwt.secret;
+
 const passwordPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}/
 
 function isUndefined (value) {
@@ -124,7 +127,7 @@ async function postLogin (req, res, next) {
       id: existingUser.id,
       role: existingUser.role
     }, config.get('secret.jwtSecret'), {
-      expiresIn: `${config.get('secret.jwtExpiresDay')}`
+      expiresIn: `${config.get('secret.jwtExpiresDay')}` 
     })
 
     res.status(201).json({

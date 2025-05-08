@@ -5,6 +5,7 @@ const User = require('../entities/User')
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+migrations: ['../migrations/*.js']
 /** 
 const dataSource = new DataSource({
   type: 'postgres',

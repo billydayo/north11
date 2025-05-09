@@ -26,7 +26,7 @@ router.post('/signup', users.postSignup);
 router.post('/login', users.postLogin);
 router.get('/profile', auth, users.getProfile);
 
-router.get('/:search', (req, res) => {
+router.get('/search/:search', (req, res) => {
     const searchs = req.params.search;
     res.status(200)
     res.send('your search is '+searchs)

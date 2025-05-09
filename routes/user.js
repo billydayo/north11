@@ -31,4 +31,6 @@ router.get('/:search', (req, res) => {
 router.post('/signup', users.postSignup);
 router.post('/login', users.postLogin);
 
+router.get('/profile', auth, users.getProfile)
+
 module.exports = router;

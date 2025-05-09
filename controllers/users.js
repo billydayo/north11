@@ -144,8 +144,30 @@ async function postLogin (req, res, next) {
     next(error)
   }
 }
+
+async function getProfile (req, res, next) {
+  try {
+    const { id } = req.user
+    const userRepository = dataSource.getRepository('User')
+    const user = await userRepository.findOne({
+      select: ['name', 'email'],
+      where: { id }
+    })
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user
+      }
+    })
+  } catch (error) {
+    logger.error('取得使用者資料錯誤:', error)
+    next(error)
+  }
+}
+
 module.exports = {
     postSignup,
-    postLogin
+    postLogin,
+    getProfile 
 }
   

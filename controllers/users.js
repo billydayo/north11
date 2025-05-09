@@ -6,7 +6,7 @@ const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
 
 //const { jwt } = require('../config');
-//const jwtSecret = jwt.secret;
+const jwtSecret = ConfigManager.get('secret.jwtSecret');
 
 const passwordPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}/
 
@@ -30,7 +30,7 @@ async function postSignup (req, res, next) {
       }
       if (!passwordPattern.test(password)) {
         logger.warn('建立使用者錯誤: 密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字')
-        res.status(400).json({
+        res.status(401).json({
           status: 'failed',
           message: '密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字'
         })

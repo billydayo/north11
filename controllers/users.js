@@ -6,7 +6,7 @@ const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
 
 //const { jwt } = require('../config');
-const jwtSecret = ConfigManager.get('secret.jwtSecret');
+const jwtSecret = process.env.JWT_SECRET; 
 
 const passwordPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}/
 

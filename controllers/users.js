@@ -165,9 +165,85 @@ async function getProfile (req, res, next) {
   }
 }
 
+async function putPassword (req, res, next) {
+  try {
+    const { id } = req.user
+    const { password, new_password: newPassword, confirm_new_password: confirmNewPassword } = req.body
+    if (isUndefined(password) || isNotValidSting(password) ||
+    isUndefined(newPassword) || isNotValidSting(newPassword) ||
+    isUndefined(confirmNewPassword) || isNotValidSting(confirmNewPassword)) {
+      logger.warn('欄位未填寫正確')
+      res.status(400).json({
+        status: 'failed',
+        message: '欄位未填寫正確'
+      })
+      return
+    }
+    if (!passwordPattern.test(password) || !passwordPattern.test(newPassword) || !passwordPattern.test(confirmNewPassword)) {
+      logger.warn('密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字')
+      res.status(400).json({
+        status: 'failed',
+        message: '密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字'
+      })
+      return
+    }
+    if (newPassword === password) {
+      logger.warn('新密碼不能與舊密碼相同')
+      res.status(400).json({
+        status: 'failed',
+        message: '新密碼不能與舊密碼相同'
+      })
+      return
+    }
+    if (newPassword !== confirmNewPassword) {
+      logger.warn('新密碼與驗證新密碼不一致')
+      res.status(400).json({
+        status: 'failed',
+        message: '新密碼與驗證新密碼不一致'
+      })
+      return
+    }
+    const userRepository = dataSource.getRepository('User')
+    const existingUser = await userRepository.findOne({
+      select: ['password'],
+      where: { id }
+    })
+    const isMatch = await bcrypt.compare(password, existingUser.password)
+    if (!isMatch) {
+      res.status(400).json({
+        status: 'failed',
+        message: '密碼輸入錯誤'
+      })
+      return
+    }
+    const salt = await bcrypt.genSalt(10)
+    const hashPassword = await bcrypt.hash(newPassword, salt)
+    const updatedResult = await userRepository.update({
+      id
+    }, {
+      password: hashPassword
+    })
+    if (updatedResult.affected === 0) {
+      res.status(400).json({
+        status: 'failed',
+        message: '更新密碼失敗'
+      })
+      return
+    }
+    res.status(200).json({
+      status: 'success',
+      data: null
+    })
+  } catch (error) {
+    logger.error('更新密碼錯誤:', error)
+    next(error)
+  }
+}
+
 module.exports = {
     postSignup,
     postLogin,
-    getProfile 
+    getProfile,
+    putPassword 
 }
   

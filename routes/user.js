@@ -22,15 +22,14 @@ router.get('/signup', (req, res) => {
     res.send('這是登入畫面')
 })
 
+router.post('/signup', users.postSignup);
+router.post('/login', users.postLogin);
+router.get('/profile', auth, users.getProfile);
+
 router.get('/:search', (req, res) => {
     const searchs = req.params.search;
     res.status(200)
     res.send('your search is '+searchs)
 })
-
-router.post('/signup', users.postSignup);
-router.post('/login', users.postLogin);
-
-router.get('/profile', auth, users.getProfile)
 
 module.exports = router;

@@ -169,9 +169,9 @@ async function putPassword (req, res, next) {
   try {
     const { id } = req.user
     const { password, new_password: newPassword, confirm_new_password: confirmNewPassword } = req.body
-    if (isUndefined(password) || isNotValidSting(password) ||
-    isUndefined(newPassword) || isNotValidSting(newPassword) ||
-    isUndefined(confirmNewPassword) || isNotValidSting(confirmNewPassword)) {
+    if (isUndefined(password) || isNotValidString(password) ||
+    isUndefined(newPassword) || isNotValidString(newPassword) ||
+    isUndefined(confirmNewPassword) || isNotValidString(confirmNewPassword)) {
       logger.warn('欄位未填寫正確')
       res.status(400).json({
         status: 'failed',

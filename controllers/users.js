@@ -62,7 +62,7 @@ async function postSignup (req, res, next) {
       const savedUser = await userRepository.save(newUser)
       const token = await generateJWT(
         { id: savedUser.id, name: savedUser.name },
-        config.get('jwt.secret'), // 從設定檔取出 JWT_SECRET
+        config.get('secret.jwtSecret'), // 從設定檔取出 JWT_SECRET
         { expiresIn: '1d' }
       )      
       logger.info('新建立的使用者ID:', savedUser.id)

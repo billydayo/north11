@@ -22,8 +22,8 @@ router.get('/signup', (req, res) => {
     res.send('這是登入畫面')
 })
 
-router.post('/signup', users.postSignup);
-router.post('/login', users.postLogin);
+router.post('/sign-up', users.postSignup);
+router.post('/log-in', users.postLogin);
 router.get('/profile', auth, users.getProfile);
 router.put('/password', auth, users.putPassword)
 

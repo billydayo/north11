@@ -5,7 +5,8 @@ const logger = require('../utils/logger')('UsersController');
 const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
 
-//const { jwt } = require('../config');
+const jwt = require('jsonwebtoken');
+//const { jwt } = require('../config'); 
 const jwtSecret = process.env.JWT_SECRET; 
 
 const passwordPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}/
@@ -241,7 +242,19 @@ async function putPassword (req, res, next) {
 }
 
 async function checkLoginStatus(req, res) {
-  res.status(200).json({ isLoggedIn: true });
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(200).json({ isLoggedIn: false });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, config.get('secret.jwtSecret'));
+
+    return res.status(200).json({ isLoggedIn: true });
+  } catch (error) {
+    return res.status(400).json({ isLoggedIn: false });
+  }
 }
 
 module.exports = {

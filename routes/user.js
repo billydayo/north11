@@ -26,7 +26,7 @@ router.post('/sign-up', users.postSignup);
 router.post('/log-in', users.postLogin);
 router.get('/profile', auth, users.getProfile);
 router.put('/change-password', auth, users.putPassword)
-router.get('/check', auth, users.checkLoginStatus);
+router.get('/check', auth, users.checkLoginStatus); //驗證登入status
 router.put('/profile', auth, users.putProfile);
 
 router.get('/search/:search', (req, res) => {

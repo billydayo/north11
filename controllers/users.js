@@ -85,8 +85,8 @@ async function postSignup (req, res, next) {
 
 async function postLogin (req, res, next) {
   try {
-    const { email, password } = req.body
-    if (isUndefined(email) || isNotValidString(email) || isUndefined(password) || isNotValidString(password)) {
+    const { account, password } = req.body
+    if (isUndefined(account) || isNotValidString(account) || isUndefined(password) || isNotValidString(password)) {
       logger.warn('欄位未填寫正確')
       res.status(400).json({
         status: 'failed',
@@ -182,7 +182,7 @@ async function putPassword (req, res, next) {
     }
     if (!passwordPattern.test(password) || !passwordPattern.test(newPassword) || !passwordPattern.test(confirmNewPassword)) {
       logger.warn('密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字')
-      res.status(400).json({
+      res.status(401).json({
         status: 'failed',
         message: '密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字'
       })
@@ -190,7 +190,7 @@ async function putPassword (req, res, next) {
     }
     if (newPassword === password) {
       logger.warn('新密碼不能與舊密碼相同')
-      res.status(400).json({
+      res.status(402).json({
         status: 'failed',
         message: '新密碼不能與舊密碼相同'
       })
@@ -198,7 +198,7 @@ async function putPassword (req, res, next) {
     }
     if (newPassword !== confirmNewPassword) {
       logger.warn('新密碼與驗證新密碼不一致')
-      res.status(400).json({
+      res.status(403).json({
         status: 'failed',
         message: '新密碼與驗證新密碼不一致'
       })
@@ -211,7 +211,7 @@ async function putPassword (req, res, next) {
     })
     const isMatch = await bcrypt.compare(password, existingUser.password)
     if (!isMatch) {
-      res.status(400).json({
+      res.status(404).json({
         status: 'failed',
         message: '密碼輸入錯誤'
       })
@@ -225,7 +225,7 @@ async function putPassword (req, res, next) {
       password: hashPassword
     })
     if (updatedResult.affected === 0) {
-      res.status(400).json({
+      res.status(405).json({
         status: 'failed',
         message: '更新密碼失敗'
       })

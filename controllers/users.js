@@ -261,7 +261,7 @@ async function putProfile (req, res, next) {
   try {
     const { id } = req.user
     const { name } = req.body
-    if (isUndefined(name) || isNotValidSting(name)) {
+    if (isUndefined(name) || isNotValidString(name)) {
       logger.warn('欄位未填寫正確')
       res.status(400).json({
         status: 'failed',

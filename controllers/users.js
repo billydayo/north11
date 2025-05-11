@@ -257,11 +257,69 @@ async function checkLoginStatus(req, res) {
   }
 }
 
+async function putProfile (req, res, next) {
+  try {
+    const { id } = req.user
+    const { name } = req.body
+    if (isUndefined(name) || isNotValidSting(name)) {
+      logger.warn('欄位未填寫正確')
+      res.status(400).json({
+        status: 'failed',
+        message: '欄位未填寫正確'
+      })
+      return
+    }
+    const userRepository = dataSource.getRepository('User')
+    const user = await userRepository.findOne({
+      select: ['name'],
+      where: {
+        id
+      }
+    })
+    if (user.name === name) {
+      res.status(400).json({
+        status: 'failed',
+        message: '使用者名稱未變更'
+      })
+      return
+    }
+    const updatedResult = await userRepository.update({
+      id,
+      name: user.name
+    }, {
+      name
+    })
+    if (updatedResult.affected === 0) {
+      res.status(400).json({
+        status: 'failed',
+        message: '更新使用者資料失敗'
+      })
+      return
+    }
+    const result = await userRepository.findOne({
+      select: ['name'],
+      where: {
+        id
+      }
+    })
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user: result
+      }
+    })
+  } catch (error) {
+    logger.error('取得使用者資料錯誤:', error)
+    next(error)
+  }
+}
+
 module.exports = {
     postSignup,
     postLogin,
     getProfile,
     putPassword,
-    checkLoginStatus
+    checkLoginStatus,
+    putProfile
 }
   

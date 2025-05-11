@@ -26,6 +26,7 @@ router.post('/sign-up', users.postSignup);
 router.post('/log-in', users.postLogin);
 router.get('/profile', auth, users.getProfile);
 router.put('/change-password', auth, users.putPassword)
+router.get('/check', auth, users.checkLoginStatus);
 
 router.get('/search/:search', (req, res) => {
     const searchs = req.params.search;

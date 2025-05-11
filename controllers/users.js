@@ -240,10 +240,15 @@ async function putPassword (req, res, next) {
   }
 }
 
+async function checkLoginStatus(req, res) {
+  res.status(200).json({ isLoggedIn: true });
+}
+
 module.exports = {
     postSignup,
     postLogin,
     getProfile,
-    putPassword 
+    putPassword,
+    checkLoginStatus
 }
   

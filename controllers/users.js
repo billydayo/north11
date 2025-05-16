@@ -131,7 +131,7 @@ async function postLogin (req, res, next) {
       expiresIn: `${config.get('secret.jwtExpiresDay')}` 
     })
 
-    res.status(201).json({
+    res.status(200).json({
       status: 'success',
       data: {
         token,

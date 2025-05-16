@@ -67,7 +67,7 @@ async function postSignup (req, res, next) {
         { expiresIn: '1d' }
       )      
       logger.info('新建立的使用者ID:', savedUser.id)
-      res.status(201).json({
+      res.status(200).json({
         status: 'success',
         data: {
           user: {
@@ -96,7 +96,7 @@ async function postLogin (req, res, next) {
     }
     if (!passwordPattern.test(password)) {
       logger.warn('密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字')
-      res.status(400).json({
+      res.status(401).json({
         status: 'failed',
         message: '密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字'
       })
@@ -109,7 +109,7 @@ async function postLogin (req, res, next) {
     })
 
     if (!existingUser) {
-      res.status(400).json({
+      res.status(402).json({
         status: 'failed',
         message: '使用者不存在或密碼輸入錯誤'
       })
@@ -118,7 +118,7 @@ async function postLogin (req, res, next) {
     logger.info(`使用者資料: ${JSON.stringify(existingUser)}`)
     const isMatch = await bcrypt.compare(password, existingUser.password)
     if (!isMatch) {
-      res.status(400).json({
+      res.status(402).json({
         status: 'failed',
         message: '使用者不存在或密碼輸入錯誤'
       })

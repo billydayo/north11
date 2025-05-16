@@ -67,7 +67,7 @@ async function postSignup (req, res, next) {
         { expiresIn: '1d' }
       )      
       logger.info('新建立的使用者ID:', savedUser.id)
-      res.status(200).json({
+      res.status(201).json({
         status: 'success',
         data: {
           user: {

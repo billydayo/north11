@@ -5,7 +5,9 @@ const express = require('express');
 const secret = require('./config/secret');
 const { dataSource } = require('./db/data-source'); 
 const app = express();
+const cors = require('cors');
 app.use(express.json());
+app.use(cors());
 
 const user = require('./routes/user')
 app.use('/api/users',user)

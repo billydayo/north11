@@ -314,12 +314,83 @@ async function putProfile (req, res, next) {
   }
 }
 
+async function updateUser (req, res, next) {
+   try {
+    const { id } = req.user
+    const { name } = req.body
+    if (!user) {
+      res.status(404).json({
+        status: 'failed',
+        message: '找不到使用者'
+      });
+      return;
+    }
+    if (
+      isUndefined(name) || isNotValidString(name) ||
+      isUndefined(email) || isNotValidEmail(email) ||
+      isUndefined(phonenumber) || isNotValidPhoneNumber(phonenumber)
+    ) {
+      logger.warn('欄位格式錯誤');
+      return res.status(400).json({
+        status: 'failed',
+        message: '請確認欄位格式是否正確（名稱、Email、電話）'
+      });
+    }
+
+    const userRepository = dataSource.getRepository('User')
+    const user = await userRepository.findOne({
+      select: ['name', 'email', 'phonenumber'],
+      where: { id }
+    })
+
+    if (
+      user.name === name &&
+      user.email === email &&
+      user.phonenumber === phonenumber
+    ) {
+      return res.status(400).json({
+        status: 'failed',
+        message: '使用者資料未變更'
+      });
+    }
+
+    const updatedResult = await userRepository.update({ id }, {
+      name,
+      email,
+      phonenumber
+    });
+
+    if (updatedResult.affected === 0) {
+      res.status(400).json({
+        status: 'failed',
+        message: '更新使用者資料失敗'
+      })
+      return
+    }
+    const result = await userRepository.findOne({
+      select: ['name', 'email', 'phonenumber'],
+      where: {
+        id
+      }
+    })
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user: result
+      }
+    })
+  } catch (error) {
+    logger.error('更新使用者資料錯誤:', error)
+    next(error)
+  }
+}
 module.exports = {
     postSignup,
     postLogin,
     getProfile,
     putPassword,
     checkLoginStatus,
-    putProfile
+    putProfile,
+    updateUser
 }
   

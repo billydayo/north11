@@ -28,6 +28,7 @@ router.get('/profile', auth, users.getProfile);
 router.put('/change-password', auth, users.putPassword)
 router.get('/check', auth, users.checkLoginStatus); //驗證登入status
 router.put('/profile', auth, users.putProfile);
+router.put('/:id', users.updateUser);//編輯全部資料
 
 router.get('/search/:search', (req, res) => {
     const searchs = req.params.search;

@@ -11,6 +11,8 @@ class CreateUserTable1746693061827 {
         "email" character varying(320) NOT NULL,
         "role" character varying(20) NOT NULL,
         "password" character varying(72) NOT NULL,
+        "phonenumber" character varying(10) NOT NULL,
+        "region" character varying(50) NOT NULL,
         "created_at" TIMESTAMP NOT NULL DEFAULT now(),
         "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
         CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"),

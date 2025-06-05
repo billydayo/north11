@@ -31,7 +31,7 @@ module.exports = new EntitySchema({
       nullable: false,
       select: false
     },
-     phonenumber: {
+    phonenumber: {
       type: 'int',
       length: 10,
       nullable: true,

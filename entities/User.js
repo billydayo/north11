@@ -32,7 +32,7 @@ module.exports = new EntitySchema({
       select: false
     },
     phonenumber: {
-      type: 'int',
+      type: 'varchar',
       length: 10,
       nullable: true,
     },

@@ -327,25 +327,25 @@ async function updateUser (req, res, next) {
     }
     if (
       isUndefined(name) || isNotValidString(name) ||
-      isUndefined(email) || isNotValidEmail(email) ||
+      isUndefined(region) || isNotValidEmail(region) ||
       isUndefined(phonenumber) || isNotValidPhoneNumber(phonenumber)
     ) {
       logger.warn('欄位格式錯誤');
       return res.status(400).json({
         status: 'failed',
-        message: '請確認欄位格式是否正確（名稱、Email、電話）'
+        message: '請確認欄位格式是否正確（名稱、region、電話）'
       });
     }
 
     const userRepository = dataSource.getRepository('User')
     const user = await userRepository.findOne({
-      select: ['name', 'email', 'phonenumber'],
+      select: ['name', 'region', 'phonenumber'],
       where: { id }
     })
 
     if (
       user.name === name &&
-      user.email === email &&
+      user.region === region &&
       user.phonenumber === phonenumber
     ) {
       return res.status(400).json({
@@ -356,7 +356,7 @@ async function updateUser (req, res, next) {
 
     const updatedResult = await userRepository.update({ id }, {
       name,
-      email,
+      region,
       phonenumber
     });
 
@@ -368,7 +368,7 @@ async function updateUser (req, res, next) {
       return
     }
     const result = await userRepository.findOne({
-      select: ['name', 'email', 'phonenumber'],
+      select: ['name', 'region', 'phonenumber'],
       where: {
         id
       }

@@ -31,6 +31,16 @@ module.exports = new EntitySchema({
       nullable: false,
       select: false
     },
+     phonenumber: {
+      type: 'int',
+      length: 10,
+      nullable: true,
+    },
+    region: {
+      type: 'varchar',
+      length: 50,
+      nullable: true,
+    },
     created_at: {
       type: 'timestamp',
       createDate: true,

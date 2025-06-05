@@ -25,12 +25,5 @@ class CreateUserTable1746693061827 {
     await queryRunner.query(`DROP TABLE "user"`);
   }
 }
-await queryRunner.query(`
-  ALTER TABLE "user"
-  ALTER COLUMN "phonenumber" DROP NOT NULL
-`);
-await queryRunner.query(`
-  ALTER TABLE "user"
-  ALTER COLUMN "region" DROP NOT NULL
-`);
+
 module.exports = CreateUserTable1746693061827;

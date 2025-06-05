@@ -318,6 +318,9 @@ async function updateUser (req, res, next) {
    try {
     const { id } = req.user
     const { name } = req.body
+    const { region } = req.body
+    const { phonenumber } = req.body
+    
     if (!user) {
       res.status(404).json({
         status: 'failed',

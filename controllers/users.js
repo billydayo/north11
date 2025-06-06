@@ -17,10 +17,6 @@ function isUndefined (value) {
 function isNotValidString (value) {
     return typeof value !== 'string' || value.trim().length === 0;
 }
-//function isNotValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return !emailRegex.test(email);
-//}
 function isNotValidPhoneNumber(phone){
   const phoneRegex = /^09\d{8}$/; // 台灣手機號碼格式
   return !phoneRegex.test(phone);
@@ -331,7 +327,7 @@ async function updateUser (req, res, next) {
     
     if (
       isUndefined(name) || isNotValidString(name) ||
-      isUndefined(region) || isNotValidString(region) ||
+      isUndefined(region) ||
       isUndefined(phonenumber) || isNotValidPhoneNumber(phonenumber)
     ) {
       logger.warn('欄位格式錯誤');

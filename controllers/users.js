@@ -321,13 +321,6 @@ async function updateUser (req, res, next) {
     const { region } = req.body
     const { phonenumber } = req.body
     
-    if (!user) {
-      res.status(404).json({
-        status: 'failed',
-        message: '找不到使用者'
-      });
-      return;
-    }
     if (
       isUndefined(name) || isNotValidString(name) ||
       isUndefined(region) || isNotValidEmail(region) ||
@@ -345,7 +338,13 @@ async function updateUser (req, res, next) {
       select: ['name', 'region', 'phonenumber'],
       where: { id }
     })
-
+    if (!user) {
+      res.status(404).json({
+        status: 'failed',
+        message: '找不到使用者'
+      });
+      return;
+    }
     if (
       user.name === name &&
       user.region === region &&

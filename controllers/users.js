@@ -155,7 +155,7 @@ async function getProfile (req, res, next) {
     const { id } = req.user
     const userRepository = dataSource.getRepository('User')
     const user = await userRepository.findOne({
-      select: ['name', 'email'],
+      select: ['name', 'email', 'phonenumber', 'region'],
       where: { id }
     })
     res.status(200).json({

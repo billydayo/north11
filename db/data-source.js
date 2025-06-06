@@ -27,7 +27,7 @@ const dataSource = new DataSource({
 let dataSourceOptions = {
   type: 'postgres',
   entities: [User],
-  migrations: [__dirname + '/../migrations/1746693061827-CreateUserTable.js'],
+  migrations: [__dirname + '/../migrations/*.js'],
   synchronize: false, //用true會跟migration衝突
   extra: {
     max: 10, // connection pool size

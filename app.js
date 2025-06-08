@@ -7,7 +7,11 @@ const { dataSource } = require('./db/data-source');
 const app = express();
 const cors = require('cors');
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true  // 如果使用 cookies，也需要這個
+}));
 
 const user = require('./routes/user')
 app.use('/api/users',user)

@@ -24,6 +24,7 @@ router.get('/signup', (req, res) => {
 
 router.post('/sign-up', users.postSignup);
 router.post('/log-in', users.postLogin);
+router.get('/restaurants', users.getStores);
 router.get('/profile', auth, users.getProfile);
 router.put('/change-password', auth, users.putPassword)
 router.get('/check', auth, users.checkLoginStatus); //驗證登入status

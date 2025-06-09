@@ -14,7 +14,8 @@ app.use(cors({
 }));
 
 const user = require('./routes/user')
-app.use('/api/users',user)
+
+app.use('/api/users', user)
 
 const port = process.env.PORT || 8000;
 

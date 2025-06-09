@@ -2,6 +2,7 @@ require('dotenv').config();
 const { DataSource } = require('typeorm')
 const config = require('../config/index')
 const User = require('../entities/User')
+const Store = require('../entities/Store')
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -26,7 +27,7 @@ const dataSource = new DataSource({
 
 let dataSourceOptions = {
   type: 'postgres',
-  entities: [User],
+  entities: [User, Store],
   migrations: [__dirname + '/../migrations/*.js'],
   synchronize: false, //用true會跟migration衝突
   extra: {

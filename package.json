@@ -6,7 +6,8 @@
     "start": "node scripts/start-with-migration.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migration:run": "typeorm migration:run -d ./db/data-source.js",
-    "dev": "node app.js"
+    "dev": "node app.js",
+    "seed:stores": "node scripts/seed-stores.js"
   },
   "author": "billy",
   "license": "ISC",

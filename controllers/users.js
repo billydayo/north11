@@ -390,9 +390,44 @@ async function updateUser (req, res, next) {
     next(error)
   }
 }
+
+async function getStores(req, res) {
+  try {
+    const Store = require('../entities/Store')
+    const storeRepository = dataSource.getRepository(Store)
+    const stores = await storeRepository.find()
+
+    // 轉換資料格式
+    const formattedStores = stores.map(store => ({
+      id: store.id,
+      name: store.name,
+      location: store.location.address,
+      price: "200~400", // 這裡可以根據實際需求修改或從資料庫獲取
+      type: store.type,
+      email: store.email,
+      phone: store.phone,
+      rating: 4.5 // 這裡可以根據實際需求修改或從資料庫獲取
+    }))
+
+    return res.status(200).json({
+      status: "success",
+      message: "搜尋成功",
+      data: formattedStores
+    })
+  } catch (error) {
+    logger.error('獲取餐廳列表時發生錯誤：', error)
+    return res.status(500).json({
+      status: "error",
+      message: "獲取餐廳列表失敗",
+      error: error.message
+    })
+  }
+}
+
 module.exports = {
     postSignup,
     postLogin,
+    getStores,
     getProfile,
     putPassword,
     checkLoginStatus,

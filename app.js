@@ -8,9 +8,10 @@ const app = express();
 const cors = require('cors');
 app.use(express.json());
 app.use(cors({
+  origin: 'https://food-map-project-frontend.onrender.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true  // 如果使用 cookies，也需要這個
+  credentials: true
 }));
 
 const user = require('./routes/user')

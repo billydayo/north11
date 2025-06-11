@@ -18,7 +18,7 @@ const user = require('./routes/user')
 const searchs = require('./routes/service')
 
 app.use('/api/users', user)
-app.use('/api/search', searchs)
+app.use('/api/restaurants', searchs)
 
 const port = process.env.PORT || 8000;
 

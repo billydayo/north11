@@ -10,12 +10,12 @@ const auth = require('../middlewares/auth')({
     secret: config.get('secret').jwtSecret,
     userRepository: dataSource.getRepository('User'),
     logger
-  })
+})
 
 router.get('/', (req, res) => {
     res.status(200)
     res.send('這是首頁')
-  })
+})
 
 router.get('/signup', (req, res) => {
     res.status(200)

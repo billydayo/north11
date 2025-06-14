@@ -24,8 +24,9 @@ function isNotValidPhoneNumber(phone){
 
 async function postSignup (req, res, next) {
     try {
-      const { name, email, password } = req.body
-      if (isUndefined(name) || isNotValidString(name) || isUndefined(email) || isNotValidString(email) || isUndefined(password) || isNotValidString(password)) {
+      const { name, email, password, role } = req.body
+      if (isUndefined(name) || isNotValidString(name) || isUndefined(email) || isNotValidString(email) || 
+      isUndefined(password) || isNotValidString(password) || isUndefined(role)|| isNotValidString(role)  ) {
         logger.warn('欄位未填寫正確')
         res.status(400).json({
           status: 'failed',
@@ -61,7 +62,7 @@ async function postSignup (req, res, next) {
       const newUser = userRepository.create({
         name,
         email,
-        role: 'USER',
+        role, 
         password: hashPassword
       })
       const savedUser = await userRepository.save(newUser)
@@ -77,6 +78,7 @@ async function postSignup (req, res, next) {
           user: {
             id: savedUser.id,
             name: savedUser.name,
+            role: savedUser.role,
             token
           }
         }

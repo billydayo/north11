@@ -1,6 +1,6 @@
 const { dataSource } = require('../db/data-source');
 const Favorite = require('../entities/Favorite');
-const Store = require('../entities/User');
+const User = require('../entities/User');
 
 async function addFavorite(req , res) {
     // const userId = req.user.id;
@@ -8,10 +8,10 @@ async function addFavorite(req , res) {
     const category = req.body.category;
     const userRole = req.user.role;
 
-    const storeRepo = dataSource.getRepository(User);
+    const userRepo = dataSource.getRepository(User);
     const favoriteRepo = dataSource.getRepository(Favorite);
     if(userRole != store){
-        const store = await storeRepo.findOneBy({id: userId});
+        const store = await userRepo.findOneBy({id: userId});
         if(!store){
             return res.status(404).json({
                 message: '找不到店家'

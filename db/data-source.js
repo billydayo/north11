@@ -3,6 +3,7 @@ const { DataSource } = require('typeorm')
 const config = require('../config/index')
 const User = require('../entities/User')
 const Store = require('../entities/Store')
+const Favorite = require('../entities/Favorite')
 
 const isProduction = process.env.NODE_ENV === 'production';
 

@@ -10,8 +10,7 @@ async function addFavorite(req , res) {
     const storeRepo = dataSource.getRepository(Store);
     const favoriteRepo = dataSource.getRepository(Favorite);
 
-    // const store = await storeRepo.findOneBy({id: storeId});
-    const store = await storeRepo.findOneBy({id: userId});
+    const store = await storeRepo.findOneBy({id: storeId});
     if(!store){
         return res.status(404).json({
             message: '找不到店家'
@@ -20,7 +19,7 @@ async function addFavorite(req , res) {
 
     const exists = await favoriteRepo.findOne({
         where:{
-            user: {id: userId},
+            // user: {id: userId},
             store: {id: storeId}
         }
     });
@@ -49,7 +48,7 @@ async function removeFavorite (req,res) {
 
     const favorite = await favoriteRepo.findOne({
         where: {
-            user: { id: userId },
+            // user: { id: userId },
             store: { id: storeId }
         }
     });

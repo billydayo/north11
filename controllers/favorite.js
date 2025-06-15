@@ -43,6 +43,10 @@ async function addFavorite(req , res) {
             res.status(201).json({ 
                 message: '已加入收藏'
             });
+        }else{
+            return res.status(403).json({
+                message: '店家無法使用此功能'
+            })
         }
     }catch(error){
         console.error('新增收藏錯誤:', error);
@@ -50,11 +54,10 @@ async function addFavorite(req , res) {
             message: '伺服器錯誤', error: error.message 
         });
     }
-    
-    }
+}
 
 
-    //移除最愛
+//移除最愛
 async function removeFavorite (req,res) {
     try{
         const userId = req.user.id;
@@ -65,7 +68,7 @@ async function removeFavorite (req,res) {
         const favorite = await favoriteRepo.findOne({
             where: {
                 user: { id: userId },
-                tore: { id: userId }
+                store: { id: storeId }
             }
         });
 

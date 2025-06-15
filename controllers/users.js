@@ -323,7 +323,7 @@ async function putProfile (req, res, next) {
 }
 
 async function updateUser (req, res, next) {
-   try {
+    try {
     const { id } = req.user
     const { name } = req.body
     const { region } = req.body

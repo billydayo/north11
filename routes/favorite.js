@@ -11,7 +11,7 @@ const auth = require('../middlewares/auth')({
     logger
 });
 
-router.post('/:storeId', auth, addFavorite);
-router.delete('/:storeId', auth, removeFavorite);
+router.post('/:userId', auth, addFavorite);
+router.delete('/:userId', auth, removeFavorite);
 
 module.exports = router;

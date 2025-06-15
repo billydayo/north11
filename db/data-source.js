@@ -28,7 +28,7 @@ const dataSource = new DataSource({
 
 let dataSourceOptions = {
   type: 'postgres',
-  entities: [User, Store],
+  entities: [User, Store,Favorite],
   migrations: [__dirname + '/../migrations/*.js'],
   synchronize: false, //用true會跟migration衝突
   extra: {

@@ -21,12 +21,14 @@ function isNotValidPhoneNumber(phone){
   const phoneRegex = /^09\d{8}$/; // 台灣手機號碼格式
   return !phoneRegex.test(phone);
 }
-
+function roleisdefined(value){
+  return value == "user" || value == "store";
+}
 async function postSignup (req, res, next) {
     try {
       const { name, email, password, role } = req.body
       if (isUndefined(name) || isNotValidString(name) || isUndefined(email) || isNotValidString(email) || 
-      isUndefined(password) || isNotValidString(password) || isUndefined(role)|| isNotValidString(role)  ) {
+      isUndefined(password) || isNotValidString(password) || isUndefined(role)|| isNotValidString(role) || !roleisdefined(role) ) {
         logger.warn('欄位未填寫正確')
         res.status(400).json({
           status: 'failed',

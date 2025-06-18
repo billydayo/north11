@@ -11,7 +11,7 @@ const auth = require('../middlewares/auth')({
     logger
 });
 
-router.get('/',auth, getFavorites);
+router.get('/fav',auth, getFavorites);
 router.post('/:userId', auth, addFavorite);
 router.delete('/:userId', auth, removeFavorite);
 

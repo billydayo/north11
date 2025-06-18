@@ -91,4 +91,23 @@ async function removeFavorite (req,res) {
     
     }
 
-module.exports = {addFavorite,removeFavorite};
+//查詢最愛
+async function getFavorites(req,res) {
+    try{
+        const userId = req.user.id;
+
+        const favorites = await dataSource.getRepository('Favorite').find({
+            where: { user: { id: userId } },
+            relations: ['store'],
+            order: {created_at: 'DESC'}
+        });
+
+        res.json(favorites);
+    }catch(error){
+        console.error('取得最愛失敗:', error);
+        res.status(500).json({ 
+            error: '無法取得最愛清單' 
+        });
+    }
+}
+module.exports = {addFavorite,removeFavorite,getFavorites};

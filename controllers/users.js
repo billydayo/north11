@@ -455,7 +455,7 @@ async function upload(req, res) {
     }
   },
   }).single('image');
-  
+
   return new Promise((resolve) => {
     uploadMiddleware(req, res, (err) => {
       if (err) {
@@ -473,6 +473,23 @@ async function upload(req, res) {
   });
 }
 
+async function uploadtodb(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: '請上傳圖片' });
+    }
+    const result = await storeService.saveImageToDatabase(req.params.id, req.file);
+    res.json({
+        status: 'success',
+        message: result 
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message 
+    });
+  }
+}
 
 module.exports = {
     postSignup,
@@ -483,6 +500,7 @@ module.exports = {
     checkLoginStatus,
     putProfile,
     updateUser,
-    upload
+    upload,
+    uploadtodb
 }
   

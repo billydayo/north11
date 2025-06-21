@@ -30,7 +30,7 @@ let dataSourceOptions = {
   type: 'postgres',
   entities: [User, Store,Favorite],
   migrations: [__dirname + '/../migrations/*.js'],
-  synchronize: true, //用true會跟migration衝突?//true代表自動更新migration
+  synchronize: true, //用true會跟migration衝突? true代表自動更新migration
   extra: {
     max: 10, // connection pool size
   },

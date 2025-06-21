@@ -16,7 +16,6 @@ router.get('/', (req, res) => {
     res.status(200)
     res.send('這是首頁')
 })
-
 router.get('/signup', (req, res) => {
     res.status(200)
     res.send('這是登入畫面')

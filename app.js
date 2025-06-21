@@ -15,12 +15,14 @@ app.use(cors({
 }));
 
 const user = require('./routes/user')
-const searches = require('./routes/service')
+const searches = require('./routes/search')
 const favoriteRoutes = require('./routes/favorite')
+const searchesnew = require('./routes/store')
 
 app.use('/api/users', user)
 app.use('/api/restaurants', searches)
 app.use('/api/favorite',favoriteRoutes)
+app.use('/api/stores', searchesnew);
 
 const port = process.env.PORT || 8000;
 

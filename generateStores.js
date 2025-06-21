@@ -1,4 +1,3 @@
-/*
 const { Faker, zh_TW, en } = require('@faker-js/faker');
 const { v4: uuidv4 } = require('uuid');
 
@@ -35,7 +34,7 @@ function generateStore() {
     },
     businessHours: businessHoursTemplate,
     status: faker.helpers.arrayElement(statusOptions),
-    owner_id: uuidv4(),
+    owner_id: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
@@ -46,5 +45,9 @@ const stores = Array.from({ length: 10 }, generateStore);
 
 // 印出結果
 console.log(JSON.stringify(stores, null, 2));
+
+function generateStores(count = 10) {
+  return Array.from({ length: count }, generateStore);
+}
 
 module.exports = generateStore;

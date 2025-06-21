@@ -4,6 +4,8 @@ const result = dotenv.config();
 const express = require('express');
 const secret = require('./config/secret');
 const { dataSource } = require('./db/data-source'); 
+const ensureUpload = require('./utils/createUpload');
+ensureUpload(); 
 const app = express();
 const cors = require('cors');
 app.use(express.json());

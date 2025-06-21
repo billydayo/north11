@@ -36,5 +36,6 @@ router.get('/search/:search', (req, res) => {
     res.status(200)
     res.send('your search is '+searchs)
 })
+router.post('/store/images', auth, users.upload)
 
 module.exports = router;

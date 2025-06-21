@@ -4,6 +4,8 @@ const config = require('../config/index');
 const logger = require('../utils/logger')('UsersController');
 const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
+const multer = require('multer');
+const path = require('path');
 
 const jwt = require('jsonwebtoken');
 //const { jwt } = require('../config'); 
@@ -428,6 +430,50 @@ async function getStores(req, res) {
   }
 }
 
+async function upload(req, res) {
+  const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename(req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+  });
+
+  const uploadMiddleware = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter(req, file, cb) {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const isValidMime = filetypes.test(file.mimetype);
+    const isValidExt = filetypes.test(path.extname(file.originalname).toLowerCase());
+    if (isValidMime && isValidExt) {
+      cb(null, true);
+    } else {
+      cb(new Error('只允許上傳圖片檔案'));
+    }
+  },
+  }).single('image');
+  
+  return new Promise((resolve) => {
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        return resolve(res.status(400).json({ error: err.message }));
+      }
+      if (!req.file) {
+        return resolve(res.status(400).json({ error: '請上傳圖片檔案' }));
+      }
+      return resolve(res.json({
+        status: 'success',
+        filename: req.file.filename,
+        path: req.file.path,
+      }));
+    });
+  });
+}
+
+
 module.exports = {
     postSignup,
     postLogin,
@@ -436,6 +482,7 @@ module.exports = {
     putPassword,
     checkLoginStatus,
     putProfile,
-    updateUser
+    updateUser,
+    upload
 }
   

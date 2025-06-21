@@ -55,6 +55,11 @@ module.exports = new EntitySchema({
       nullable: true,
       comment: '店家擁有者 ID，關聯到 User 表'
     },
+    images: {
+      type: 'json',
+      nullable: true,
+      comment: '多張圖片的檔名或 URL 陣列',
+    },
     created_at: {
       type: 'timestamp',
       createDate: true,

@@ -7,7 +7,7 @@ async function addFavorite(req , res) {
     try{
         const userId = req.user.id; //收藏者ID
         const storeId = req.params.userId; //被收藏ID
-        const category = req.body.category;
+        //const category = req.body.category;
         const userRole = req.user.role;
 
         const userRepo = dataSource.getRepository(User);
@@ -36,7 +36,7 @@ async function addFavorite(req , res) {
             const favorite = favoriteRepo.create({
                 user: {id: userId},
                 store: {id: storeId},
-                category :category
+                //category :category
             });
 
             await favoriteRepo.save(favorite);

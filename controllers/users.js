@@ -486,7 +486,7 @@ async function uploadtodb(req, res) {
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      message: err.message 
+      message: err.message || '伺服器錯誤'
     });
   }
 }

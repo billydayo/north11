@@ -29,13 +29,14 @@ router.put('/change-password', auth, users.putPassword)
 router.get('/check', auth, users.checkLoginStatus); //驗證登入status
 router.put('/profile', auth, users.putProfile);  // 編輯使用者名稱
 router.put('/update', auth, users.updateUser);//編輯全部資料
+router.post('/store/images', auth, users.upload)
+router.post('/store/:id/images', auth, users.uploadtodb )
+
 //中間的auth代表是否需要驗證登入狀態
 router.get('/search/:search', (req, res) => {
     const searchs = req.params.search;
     res.status(200)
     res.send('your search is '+searchs)
 })
-router.post('/store/images', auth, users.upload)
-router.post('/store/:id/images', auth, users.uploadtodb )
 
 module.exports = router;

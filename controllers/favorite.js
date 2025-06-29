@@ -10,44 +10,74 @@ async function addFavorite(req , res) {
         //const category = req.body.category;
         const userRole = req.user.role;
 
-        const userRepo = dataSource.getRepository(User);
+        const storeRepo = dataSource.getRepository('store');
         const favoriteRepo = dataSource.getRepository(Favorite);
 
-        if(userRole !== 'store'){
-            const store = await userRepo.findOneBy({id: storeId});
-            if(!store){
-                return res.status(404).json({
-                    message: '找不到店家'
-                });
-            };
+        // if(userRole !== 'store'){
+        //     const store = await userRepo.findOneBy({id: storeId});
+        //     if(!store){
+        //         return res.status(404).json({
+        //             message: '找不到店家'
+        //         });
+        //     };
 
-            const exists = await favoriteRepo.findOne({
-                where:{
-                    user: {id: userId},
-                    store: {id: storeId}
-                }
+        //     const exists = await favoriteRepo.findOne({
+        //         where:{
+        //             user: {id: userId},
+        //             store: {id: storeId}
+        //         }
+        //     });
+        //     if(exists){
+        //         return res.status(200).json({
+        //             message: '已收藏'
+        //         })
+        //     };
+
+        //     const favorite = favoriteRepo.create({
+        //         user: {id: userId},
+        //         store: {id: storeId},
+        //         //category :category
+        //     });
+
+        //     await favoriteRepo.save(favorite);
+        //     res.status(201).json({ 
+        //         message: '已加入收藏'
+        //     });
+        // }else{
+        //     return res.status(403).json({
+        //         message: '店家無法使用此功能'
+        //     })
+        // }
+        const store = await storeRepo.findOneBy({id: storeId});
+        if(!store){
+            return res.status(404).json({
+                message: '找不到店家'
             });
-            if(exists){
-                return res.status(200).json({
-                    message: '已收藏'
-                })
-            };
+        };
 
-            const favorite = favoriteRepo.create({
+        const exists = await favoriteRepo.findOne({
+            where:{
                 user: {id: userId},
-                store: {id: storeId},
-                //category :category
-            });
-
-            await favoriteRepo.save(favorite);
-            res.status(201).json({ 
-                message: '已加入收藏'
-            });
-        }else{
-            return res.status(403).json({
-                message: '店家無法使用此功能'
+                store: {id: storeId}
+            }
+        });
+        if(exists){
+            return res.status(200).json({
+                message: '已收藏'
             })
-        }
+        };
+
+        const favorite = favoriteRepo.create({
+            user: {id: userId},
+            store: {id: storeId},
+            //category :category
+        });
+
+        await favoriteRepo.save(favorite);
+        res.status(201).json({ 
+            message: '已加入收藏'
+        });
+        
     }catch(error){
         console.error('新增收藏錯誤:', error);
         return res.status(500).json({

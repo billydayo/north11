@@ -496,7 +496,7 @@ async function uploadtodb(req, res) {
 async function forget(req, res, next) {
    try {
     const { email } = req.body;
-    const userRepository = dataSource.getRepository(user);
+    const userRepository = dataSource.getRepository('User');
     const user = await userRepository.findOne({ where: { email } });
 
     if (!user) {
@@ -505,7 +505,7 @@ async function forget(req, res, next) {
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 
-    // 寄信 (用你的寄信服務)
+    // 寄信
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
@@ -534,7 +534,7 @@ async function reset(req, res, next) {
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const userRepository = dataSource.getRepository(User);
+    const userRepository = dataSource.getRepository('User');
     const user = await userRepository.findOneBy({ id: payload.id });
 
     if (!user) {

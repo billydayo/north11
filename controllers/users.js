@@ -491,6 +491,43 @@ async function uploadtodb(req, res) {
   }
 }
 
+async function forget(req, res) {
+  const { email } = req.body;
+  const userRepo = dataSource.getRepository(User);
+  const user = await userRepo.findOneBy({ email });
+
+  if (!user) return res.status(404).json({ message: '找不到此 Email 帳戶' });
+
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 小時
+
+  user.reset_password_token = token;
+  user.reset_password_expires = expires;
+  await userRepo.save(user);
+
+  const resetUrl = `https://your-frontend.com/reset-password?token=${token}`;
+  await sendResetPasswordEmail(user.email, resetUrl);
+
+  res.json({ message: '重設密碼信件已寄出' });
+}
+
+async function reset(req, res) {
+  const { token, newPassword } = req.body;
+  const userRepo = dataSource.getRepository(User);
+  const user = await userRepo.findOneBy({ reset_password_token: token });
+
+  if (!user || !user.reset_password_expires || user.reset_password_expires < new Date()) {
+    return res.status(400).json({ message: 'Token 已失效或無效' });
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.reset_password_token = null;
+  user.reset_password_expires = null;
+  await userRepo.save(user);
+
+  res.json({ message: '密碼重設成功' });
+}
+
 module.exports = {
     postSignup,
     postLogin,
@@ -501,6 +538,8 @@ module.exports = {
     putProfile,
     updateUser,
     upload,
-    uploadtodb
+    uploadtodb,
+    forget,
+    reset
 }
   

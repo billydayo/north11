@@ -31,6 +31,8 @@ router.put('/profile', auth, users.putProfile);  // 編輯使用者名稱
 router.put('/update', auth, users.updateUser);//編輯全部資料
 router.post('/store/images', auth, users.upload)
 router.post('/store/:id/images', auth, users.uploadtodb )
+router.post('/forget', users.forget )//忘記密碼
+router.post('/reset', users.reset )//重設密碼
 
 //中間的auth代表是否需要驗證登入狀態
 router.get('/search/:search', (req, res) => {

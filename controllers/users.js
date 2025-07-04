@@ -493,41 +493,64 @@ async function uploadtodb(req, res) {
 
 const { sendResetPasswordEmail } = require('../utils/email');
 
-async function forget(req, res) {
-  const { email } = req.body;
-  const userRepo = dataSource.getRepository(user);
-  const user = await userRepo.findOneBy({ email });
+async function forget(req, res, next) {
+   try {
+    const { email } = req.body;
+    const userRepository = dataSource.getRepository(User);
+    const user = await userRepository.findOne({ where: { email } });
 
-  if (!user) return res.status(404).json({ message: '找不到此 Email 帳戶' });
+    if (!user) {
+      return res.status(404).json({ status: 'failed', message: '找不到該使用者' });
+    }
 
-  const token = crypto.randomBytes(32).toString('hex');
-  const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 小時
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 
-  user.reset_password_token = token;
-  user.reset_password_expires = expires;
-  await userRepo.save(user);
+    // 寄信 (用你的寄信服務)
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+    });
 
-  const resetUrl = `https://your-frontend.com/reset-password?token=${token}`;
-  await sendResetPasswordEmail(user.email, resetUrl);
+    await transporter.sendMail({
+      from: `"你的網站" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: '重設密碼',
+      html: `<p>請點擊以下連結重設密碼：</p>
+             <a href="https://your-frontend/reset-password?token=${token}">重設密碼</a>`
+    });
 
-  res.json({ message: '重設密碼信件已寄出' });
+    res.json({ status: 'success', message: '重設密碼信已寄出' });
+  } catch (error) {
+    next(error);
+  }
 }
 
-async function reset(req, res) {
-  const { token, newPassword } = req.body;
-  const userRepo = dataSource.getRepository(User);
-  const user = await userRepo.findOneBy({ reset_password_token: token });
+async function reset(req, res, next) {
+  try {
+    const { token, newPassword, confirmPassword } = req.body;
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ status: 'failed', message: '密碼不一致' });
+    }
 
-  if (!user || !user.reset_password_expires || user.reset_password_expires < new Date()) {
-    return res.status(400).json({ message: 'Token 已失效或無效' });
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const userRepository = dataSource.getRepository(User);
+    const user = await userRepository.findOneBy({ id: payload.id });
+
+    if (!user) {
+      return res.status(404).json({ status: 'failed', message: '使用者不存在' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await userRepository.save(user);
+
+    res.json({ status: 'success', message: '密碼已更新' });
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ status: 'failed', message: '重設連結已過期' });
+    }
+    next(error);
   }
-
-  user.password = await bcrypt.hash(newPassword, 10);
-  user.reset_password_token = null;
-  user.reset_password_expires = null;
-  await userRepo.save(user);
-
-  res.json({ message: '密碼重設成功' });
 }
 
 module.exports = {

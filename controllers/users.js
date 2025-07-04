@@ -529,8 +529,13 @@ async function reset(req, res, next) {
    try {
     const { token, newPassword } = req.body;
 
-    if (!newPassword || newPassword.length < 8) {
-      return res.status(400).json({ status: 'failed', message: '密碼太短' });
+    if (!newPassword || isUndefined(newPassword) || isNotValidString(newPassword)) {
+      logger.warn('密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字');
+      res.status(401).json({
+        status: 'failed',
+        message: '密碼不符合規則，需要包含英文數字大小寫，最短8個字，最長16個字'
+      })
+      return
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
@@ -568,4 +573,3 @@ module.exports = {
     forget,
     reset
 }
-  

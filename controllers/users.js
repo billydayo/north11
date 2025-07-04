@@ -8,6 +8,8 @@ const multer = require('multer');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const { sendResetPasswordEmail } = require('../utils/email');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const jwt = require('jsonwebtoken');
 //const { jwt } = require('../config'); 
@@ -506,18 +508,18 @@ async function forget(req, res, next) {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 
     // 寄信
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    });
-
-    await transporter.sendMail({
-      from: `"你的網站" <${process.env.EMAIL_USER}>`,
+    const msg = {
       to: user.email,
+      from: process.env.EMAIL_USER,  // 必須是 SendGrid 驗證過的信箱//9月就到期
       subject: '重設密碼',
-      html: `<p>請點擊以下連結重設密碼：</p>
-             <a href="https://your-frontend/reset-password?token=${token}">重設密碼</a>`
-    });
+      html: `
+        <p>請點擊以下連結重設密碼：</p>
+        <a href="https://your-frontend/reset-password?token=${token}">重設密碼連結</a>
+        <p>此連結15分鐘內有效</p>
+      `,
+    };
+
+    await sgMail.send(msg);
 
     res.json({ status: 'success', message: '重設密碼信已寄出' });
   } catch (error) {

@@ -7,6 +7,7 @@ const { dataSource } = require('../db/data-source')
 const multer = require('multer');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const { sendResetPasswordEmail } = require('../utils/email');
 
 const jwt = require('jsonwebtoken');
 //const { jwt } = require('../config'); 
@@ -492,12 +493,10 @@ async function uploadtodb(req, res) {
   }
 }
 
-const { sendResetPasswordEmail } = require('../utils/email');
-
 async function forget(req, res, next) {
    try {
     const { email } = req.body;
-    const userRepository = dataSource.getRepository(User);
+    const userRepository = dataSource.getRepository(user);
     const user = await userRepository.findOne({ where: { email } });
 
     if (!user) {

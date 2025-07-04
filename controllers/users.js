@@ -491,9 +491,11 @@ async function uploadtodb(req, res) {
   }
 }
 
+const { sendResetPasswordEmail } = require('../utils/email');
+
 async function forget(req, res) {
   const { email } = req.body;
-  const userRepo = dataSource.getRepository(User);
+  const userRepo = dataSource.getRepository(user);
   const user = await userRepo.findOneBy({ email });
 
   if (!user) return res.status(404).json({ message: '找不到此 Email 帳戶' });

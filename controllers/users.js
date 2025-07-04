@@ -6,6 +6,7 @@ const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
 const multer = require('multer');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const jwt = require('jsonwebtoken');
 //const { jwt } = require('../config'); 
@@ -526,10 +527,11 @@ async function forget(req, res, next) {
 }
 
 async function reset(req, res, next) {
-  try {
-    const { token, newPassword, confirmPassword } = req.body;
-    if (newPassword !== confirmPassword) {
-      return res.status(400).json({ status: 'failed', message: '密碼不一致' });
+   try {
+    const { token, newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({ status: 'failed', message: '密碼太短' });
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);

@@ -496,9 +496,9 @@ async function uploadtodb(req, res) {
 }
 
 async function forget(req, res, next) {
-   try {
+  try {
     const { email } = req.body;
-    const userRepository = dataSource.getRepository('User');
+    const userRepository = dataSource.getRepository(User);
     const user = await userRepository.findOne({ where: { email } });
 
     if (!user) {
@@ -507,23 +507,27 @@ async function forget(req, res, next) {
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 
-    // 寄信
-    const msg = {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER, // 你的 Gmail
+        pass: process.env.EMAIL_PASS, // Gmail App Password（不是登入密碼）
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"你的網站" <${process.env.EMAIL_USER}>`,
       to: user.email,
-      from: process.env.EMAIL_USER,  // 必須是 SendGrid 驗證過的信箱//9月就到期
       subject: '重設密碼',
       html: `
-        <p>請點擊以下連結重設密碼：</p>
-        <a href=https://food-map-project-frontend.onrender.com/reset?token=${token}">重設密碼連結</a>
-        <p>此連結15分鐘內有效</p>
+        <p>請點擊以下連結重設密碼（15 分鐘內有效）：</p>
+        <a href="https://food-map-project-frontend.onrender.com/reset?token=${token}">重設密碼連結</a>
       `,
-    };
-
-    await sgMail.send(msg);
+    });
 
     res.json({ status: 'success', message: '重設密碼信已寄出' });
   } catch (error) {
-    next(error);
+      next(error);
   }
 }
 

@@ -498,7 +498,7 @@ async function uploadtodb(req, res) {
 async function forget(req, res, next) {
   try {
     const { email } = req.body;
-    const userRepository = dataSource.getRepository(User);
+    const userRepository = dataSource.getRepository('User');
     const user = await userRepository.findOne({ where: { email } });
 
     if (!user) {

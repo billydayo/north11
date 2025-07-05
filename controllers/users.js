@@ -516,7 +516,7 @@ async function forget(req, res, next) {
     });
 
     await transporter.sendMail({
-      from: `"你的網站" <${process.env.EMAIL_USER}>`,
+      from: `"north11map@gmail.com" <${process.env.EMAIL_USER}>`,
       to: user.email,
       subject: '重設密碼',
       html: `

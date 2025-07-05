@@ -514,7 +514,7 @@ async function forget(req, res, next) {
       subject: '重設密碼',
       html: `
         <p>請點擊以下連結重設密碼：</p>
-        <a href=https://food-map-project-frontend.onrender.com/reset-password?token=${token}">重設密碼連結</a>
+        <a href=https://food-map-project-frontend.onrender.com/reset?token=${token}">重設密碼連結</a>
         <p>此連結15分鐘內有效</p>
       `,
     };

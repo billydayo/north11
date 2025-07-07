@@ -525,12 +525,10 @@ async function upload(req, res) {
     }
 
     const imagePath = req.file.path;
-    const userId = req.user.id; 
-
     const storeRepo = dataSource.getRepository(Store);
 
     // 用 owner_id 找 Store
-    const store = await storeRepo.findOneBy({ owner_id });
+    const store = await storeRepo.findOneBy({ owner_id: req.user.id});
     if (!store) {
       return res.status(404).json({ error: '找不到對應的商店資料' });
     }

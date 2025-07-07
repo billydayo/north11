@@ -6,6 +6,7 @@ const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
 const multer = require('multer');
 const path = require('path');
+const Store = require('../entities/Store');
 const nodemailer = require('nodemailer');
 const { sendResetPasswordEmail } = require('../utils/email');
 const sgMail = require('@sendgrid/mail');
@@ -473,7 +474,7 @@ async function upload(req, res) {
       const imagePath = req.file.path;  // 存相對路徑
 
       try {
-        const imageRepo = dataSource.getRepository(Image);
+        const imageRepo = dataSource.getRepository(Store);
         const newImage = imageRepo.create({ path: imagePath });
         await imageRepo.save(newImage);
 

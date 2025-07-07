@@ -501,7 +501,7 @@ async function upload(req, res) {
     }
 
     const imagePath = req.file.path;
-    const userId = req.user.id; // 假設 JWT 或 session 有帶 userId
+    const userId = req.user.id; 
 
     const storeRepo = dataSource.getRepository(Store);
 
@@ -528,6 +528,15 @@ async function upload(req, res) {
     console.error(err);
     return res.status(500).json({ error: '伺服器錯誤' });
   }
+}
+
+function uploadFile(req, res) {
+  return new Promise((resolve, reject) => {
+    uploadMiddleware(req, res, (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
 }
 
 async function deleteImage(req, res) {

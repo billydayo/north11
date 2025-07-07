@@ -529,8 +529,8 @@ async function upload(req, res) {
 
     const storeRepo = dataSource.getRepository(Store);
 
-    // 用 userId 找 Store
-    const store = await storeRepo.findOneBy({ userId });
+    // 用 owner_id 找 Store
+    const store = await storeRepo.findOneBy({ owner_id });
     if (!store) {
       return res.status(404).json({ error: '找不到對應的商店資料' });
     }

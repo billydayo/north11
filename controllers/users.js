@@ -584,9 +584,13 @@ async function deleteImage(req, res) {
     }
 
     // 刪除硬碟圖片
-    const fullPath = path.resolve(imageToDelete);
-    await fs.unlink(fullPath);  // 刪除檔案
-
+    const uploadsDir = path.resolve('uploads');
+    const fullPath = path.resolve(uploadsDir, path.basename(imageToDelete));
+    try {
+      await fs.unlink(fullPath);
+    } catch (fsErr) {
+      console.error('刪除檔案失敗:', fsErr);
+    }
     // 從資料庫移除圖片路徑
     store.images.splice(imageIndex, 1);
     await storeRepo.save(store);

@@ -435,7 +435,7 @@ async function getStores(req, res) {
     })
   }
 }
-
+/*
 async function upload(req, res) {
   const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -490,6 +490,44 @@ async function upload(req, res) {
       }
     });
   });
+}
+*/
+async function upload(req, res) {
+  try {
+    await uploadFile(req, res); // multer Promise 包裝
+
+    if (!req.file) {
+      return res.status(400).json({ error: '請上傳圖片檔案' });
+    }
+
+    const imagePath = req.file.path;
+    const userId = req.user.id; // 假設 JWT 或 session 有帶 userId
+
+    const storeRepo = dataSource.getRepository(Store);
+
+    // 用 userId 找 Store
+    const store = await storeRepo.findOneBy({ userId });
+    if (!store) {
+      return res.status(404).json({ error: '找不到對應的商店資料' });
+    }
+
+    if (!store.images) store.images = [];
+    store.images.push(imagePath);
+
+    await storeRepo.save(store);
+
+    return res.json({
+      status: 'success',
+      filename: req.file.filename,
+      path: imagePath,
+      storeId: store.id,
+      images: store.images,
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: '伺服器錯誤' });
+  }
 }
 
 async function deleteImage(req, res) {

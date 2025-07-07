@@ -551,7 +551,6 @@ async function upload(req, res) {
     return res.status(500).json({ error: '伺服器錯誤' });
   }
 }
-
 function uploadFile(req, res) {
   return new Promise((resolve, reject) => {
     uploadMiddleware(req, res, (err) => {
@@ -562,29 +561,40 @@ function uploadFile(req, res) {
 }
 
 async function deleteImage(req, res) {
-  const id = parseInt(req.params.id, 10);
   try {
-    const imageRepo = dataSource.getRepository(Image);
-    const image = await imageRepo.findOneBy({ id });
+    const userId = req.user.id; // 從登入的使用者取 ID
+    const imageToDelete = req.body.imagePath; // 前端傳要刪的圖片路徑
 
-    if (!image) {
-      return res.status(404).json({ error: '圖片不存在' });
+    if (!imageToDelete) {
+      return res.status(400).json({ error: '請提供要刪除的圖片路徑' });
     }
 
-    // 刪除圖片檔案
-    fs.unlink(path.resolve(image.path), async (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: '刪除檔案失敗' });
-      }
+    const storeRepo = dataSource.getRepository(Store);
+    const store = await storeRepo.findOneBy({ owner_id: userId });
 
-      // 刪除資料庫記錄
-      await imageRepo.delete({ id });
-      res.json({ status: 'success', message: '圖片已刪除' });
-    });
+    if (!store) {
+      return res.status(404).json({ error: '找不到商店資料' });
+    }
+
+    // 檢查圖片是否存在於 store.images 中
+    const imageIndex = store.images.indexOf(imageToDelete);
+    if (imageIndex === -1) {
+      return res.status(404).json({ error: '圖片不存在於商店資料中' });
+    }
+
+    // 刪除硬碟圖片
+    const fullPath = path.resolve(imageToDelete);
+    await fs.unlink(fullPath);  // 刪除檔案
+
+    // 從資料庫移除圖片路徑
+    store.images.splice(imageIndex, 1);
+    await storeRepo.save(store);
+
+    return res.json({ status: 'success', message: '圖片已刪除' });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: '刪除失敗' });
+    return res.status(500).json({ error: '伺服器錯誤' });
   }
 }
 

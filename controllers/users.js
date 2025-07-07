@@ -5,6 +5,7 @@ const logger = require('../utils/logger')('UsersController');
 const generateJWT = require('../utils/generateJWT');
 const { dataSource } = require('../db/data-source')
 const multer = require('multer');
+const fs = require('fs').promises;
 const path = require('path');
 const Store = require('../entities/Store');
 const nodemailer = require('nodemailer');

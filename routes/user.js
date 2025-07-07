@@ -30,7 +30,7 @@ router.get('/check', auth, users.checkLoginStatus); //驗證登入status
 router.put('/profile', auth, users.putProfile);  // 編輯使用者名稱
 router.put('/update', auth, users.updateUser);//編輯全部資料
 router.post('/store/images', auth, users.upload)
-router.post('/store/:id/images', auth, users.uploadtodb )
+router.delete('/store/images', auth, users.deleteImage )
 router.post('/forget', users.forget )//忘記密碼
 router.post('/reset', users.reset )//重設密碼
 

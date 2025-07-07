@@ -12,6 +12,7 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const jwt = require('jsonwebtoken');
+const { networkInterfaces } = require('os');
 //const { jwt } = require('../config'); 
 const jwtSecret = process.env.JWT_SECRET; 
 
@@ -447,7 +448,7 @@ async function upload(req, res) {
 
   const uploadMiddleware = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // 最大5MB
   fileFilter(req, file, cb) {
     const filetypes = /jpeg|jpg|png|gif/;
     const isValidMime = filetypes.test(file.mimetype);
@@ -461,37 +462,59 @@ async function upload(req, res) {
   }).single('image');
 
   return new Promise((resolve) => {
-    uploadMiddleware(req, res, (err) => {
+    uploadMiddleware(req, res, async(err) => {
       if (err) {
         return resolve(res.status(400).json({ error: err.message }));
       }
       if (!req.file) {
         return resolve(res.status(400).json({ error: '請上傳圖片檔案' }));
       }
-      return resolve(res.json({
-        status: 'success',
-        filename: req.file.filename,
-        path: req.file.path,
-      }));
+      
+      const imagePath = req.file.path;  // 存相對路徑
+
+      try {
+        const imageRepo = dataSource.getRepository(Image);
+        const newImage = imageRepo.create({ path: imagePath });
+        await imageRepo.save(newImage);
+
+        return resolve(res.json({
+          status: 'success',
+          filename: req.file.filename,
+          path: imagePath,
+          dbId: newImage.id,  // 回傳資料庫ID
+        }));
+      } catch (dbError) {
+        console.error(dbError);
+        return resolve(res.status(500).json({ error: '資料庫錯誤' }));
+      }
     });
   });
 }
 
-async function uploadtodb(req, res) {
+async function deleteImage(req, res) {
+  const id = parseInt(req.params.id, 10);
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: '請上傳圖片' });
+    const imageRepo = dataSource.getRepository(Image);
+    const image = await imageRepo.findOneBy({ id });
+
+    if (!image) {
+      return res.status(404).json({ error: '圖片不存在' });
     }
-    const result = await storeService.saveImageToDatabase(req.params.id, req.file);
-    res.json({
-        status: 'success',
-        message: result 
+
+    // 刪除圖片檔案
+    fs.unlink(path.resolve(image.path), async (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: '刪除檔案失敗' });
+      }
+
+      // 刪除資料庫記錄
+      await imageRepo.delete({ id });
+      res.json({ status: 'success', message: '圖片已刪除' });
     });
   } catch (err) {
-    res.status(500).json({
-      status: 'error',
-      message: err.message || '伺服器錯誤'
-    });
+    console.error(err);
+    res.status(500).json({ error: '刪除失敗' });
   }
 }
 
@@ -575,7 +598,7 @@ module.exports = {
     putProfile,
     updateUser,
     upload,
-    uploadtodb,
+    deleteImage,
     forget,
     reset
 }

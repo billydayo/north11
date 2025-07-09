@@ -439,11 +439,11 @@ async function getStores(req, res) {
       id: store.id,
       name: store.name,
       location: store.location.address,
-      price: "200~400", // 這裡可以根據實際需求修改或從資料庫獲取
+      price: "200~400", 
       type: store.type,
       email: store.email,
       phone: store.phone,
-      rating: 4.5 // 這裡可以根據實際需求修改或從資料庫獲取
+      rating: 4.5 // 根據實際需求修改或從資料庫獲取
     }))
 
     return res.status(200).json({
@@ -673,11 +673,10 @@ async function reset(req, res, next) {
   }
 }
 
-async function getStore(req, res, next) {
+async function getUserStore(req, res) {
   try {
     const ownerId = req.user.id;
-
-    const storeRepo = dataSource.getRepository(Store);
+    const storeRepo = dataSource.getRepository('Store');
     const stores = await storeRepo.findBy({ owner_id: ownerId });
 
     return res.json({ status: 'success', data: stores });
@@ -700,5 +699,5 @@ module.exports = {
     deleteImage,
     forget,
     reset,
-    getStore
+    getUserStore
 }

@@ -673,6 +673,20 @@ async function reset(req, res, next) {
   }
 }
 
+async function getStore(req, res, next) {
+  try {
+    const ownerId = req.user.id;
+
+    const storeRepo = dataSource.getRepository(Store);
+    const stores = await storeRepo.findBy({ owner_id: ownerId });
+
+    return res.json({ status: 'success', data: stores });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: '伺服器錯誤' });
+  }
+}
+
 module.exports = {
     postSignup,
     postLogin,
@@ -685,5 +699,6 @@ module.exports = {
     upload,
     deleteImage,
     forget,
-    reset
+    reset,
+    getStore
 }

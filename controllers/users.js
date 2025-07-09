@@ -686,6 +686,36 @@ async function getUserStore(req, res) {
   }
 }
 
+async function postUserStore(req, res) {
+  try {
+    const userId = req.user.id;
+    const { name, type, email, phone, description, businessHours, status, images} = req.body;  // 接收前端傳來的欄位（可擴充）
+
+    const storeRepo = dataSource.getRepository('Store');
+    const store = await storeRepo.findOneBy({ owner_id: userId });
+
+    if (!store) {
+      return res.status(404).json({ error: '找不到商店資料' });
+    }
+    //只更新有寫的欄位
+    if (name !== undefined) store.name = name;
+    if (type !== undefined) store.type = type;
+    if (email !== undefined) store.email = email;
+    if (phone !== undefined) store.phone = phone;
+    if (description !== undefined) store.description = description;
+    if (businessHours !== undefined) store.businessHours = businessHours;
+    if (status !== undefined) store.status = status;
+    if (images !== undefined) store.images = images;
+
+    await storeRepo.save(store);
+
+    return res.json({ status: 'success', data: store });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: '伺服器錯誤' });
+  }
+}
+
 module.exports = {
     postSignup,
     postLogin,
@@ -699,5 +729,6 @@ module.exports = {
     deleteImage,
     forget,
     reset,
-    getUserStore
+    getUserStore,
+    postUserStore
 }

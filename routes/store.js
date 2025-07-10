@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { dataSource } = require('../db/data-source');
-
+//新搜尋
 router.get('/search', async (req, res) => {
   const { q, limit = 10, offset = 0 } = req.query;
 
@@ -11,7 +11,6 @@ router.get('/search', async (req, res) => {
 
   try {
     const storeRepo = dataSource.getRepository('Store');
-
     const stores = await storeRepo
       .createQueryBuilder('store')
       .where('store.name ILIKE :keyword OR store.location::jsonb ->> \'address\' ILIKE :keyword', {

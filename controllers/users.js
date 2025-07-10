@@ -689,7 +689,7 @@ async function getUserStore(req, res) {
 async function postUserStore(req, res) {
   try {
     const userId = req.user.id;
-    const { name, type, email, phone, description, businessHours, status, images} = req.body;  // 接收前端傳來的欄位（可擴充）
+    const { name, type, email, phone, description, businessHours, status, images} = req.body;  // 接收前端傳來的欄位
 
     const storeRepo = dataSource.getRepository('Store');
     const store = await storeRepo.findOneBy({ owner_id: userId });

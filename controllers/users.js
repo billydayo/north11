@@ -717,7 +717,6 @@ async function postUserStore(req, res) {
 }
 
 async function addStore(req, res) {
-  async function assignStoresToOwner(req, res) {
   try {
     const userId = req.user.id;  // 登入的店家 ID
     const { storeIds } = req.body;
@@ -748,8 +747,6 @@ async function addStore(req, res) {
     console.error(err);
     res.status(500).json({ status: 'failed', message: '伺服器錯誤' });
   }
-}
-
 }
 
 module.exports = {

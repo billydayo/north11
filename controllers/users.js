@@ -723,10 +723,13 @@ async function addStore(req, res) {
     const { storeIds } = req.body;
 
     // 簡單驗證
+    if (req.user.role !== 'store') {
+      return res.status(403).json({ status: 'failed', message: '沒有權限執行此操作' });
+    }
     if (!Array.isArray(storeIds) || storeIds.length === 0) {
       return res.status(400).json({ status: 'failed', message: '請提供有效的餐廳 ID 陣列' });
     }
-    
+
     const storeRepo = dataSource.getRepository('Store');
 
     // 批次更新餐廳 owner_id

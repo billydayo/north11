@@ -21,7 +21,22 @@ router.get('/search', async (req, res) => {
       .orderBy('store.created_at', 'DESC')
       .getMany();
 
-    res.json({ status: 'success', data: stores });
+    res.json({ 
+      status: 'success', 
+      data: stores.map(store => ({
+        id: store.id,
+        name: store.name,
+        type: store.type,
+        email: store.email,
+        phone: store.phone,
+        description: store.description,
+        latitude: store.location.lat,
+        longitude: store.location.lng,
+        address: store.location.address,
+        businessHours: store.businessHours,
+        images: store.images
+      })) 
+    });
   } catch (error) {
     console.error('搜尋錯誤:', error);
     res.status(500).json({ status: 'error', message: '搜尋失敗' });

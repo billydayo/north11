@@ -716,6 +716,39 @@ async function postUserStore(req, res) {
   }
 }
 
+async function addStore(req, res) {
+  async function assignStoresToOwner(req, res) {
+  try {
+    const userId = req.user.id;  // 登入的店家 ID
+    const { storeIds } = req.body;
+
+    // 簡單驗證
+    if (!Array.isArray(storeIds) || storeIds.length === 0) {
+      return res.status(400).json({ status: 'failed', message: '請提供有效的餐廳 ID 陣列' });
+    }
+    
+    const storeRepo = dataSource.getRepository('Store');
+
+    // 批次更新餐廳 owner_id
+    const updateResult = await storeRepo
+      .createQueryBuilder()
+      .update()
+      .set({ owner_id: userId })
+      .where('id IN (:...ids) AND owner_id IS NULL', { ids: storeIds })
+      .execute();
+
+    res.json({
+      status: 'success',
+      updatedCount: updateResult.affected
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: 'failed', message: '伺服器錯誤' });
+  }
+}
+
+}
+
 module.exports = {
     postSignup,
     postLogin,
@@ -730,5 +763,6 @@ module.exports = {
     forget,
     reset,
     getUserStore,
-    postUserStore
+    postUserStore,
+    addStore
 }

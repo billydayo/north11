@@ -749,6 +749,43 @@ async function addStore(req, res) {
   }
 }
 
+async function createStore(req, res) {
+  try {
+    if (req.user.role !== 'store') {
+      return res.status(403).json({ status: 'failed', message: '沒有權限新增店家' });
+    }
+
+    const userId = req.user.id;
+    const storeRepo = dataSource.getRepository('Store');
+    // 建立店家資料
+    const {
+      name, type, email, phone, description, location, businessHours
+    } = req.body;
+
+    const newStore = storeRepo.create({
+      name,
+      type: type || null,
+      email: email || null,
+      phone: phone || null,
+      description: description || null,
+      location,
+      businessHours,
+      owner_id: userId,
+      status: 'active'
+    });
+
+    const savedStore = await storeRepo.save(newStore);
+
+    res.json({
+      status: 'success',
+      data: savedStore
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: 'failed', message: '伺服器錯誤' });
+  }
+}
+
 module.exports = {
     postSignup,
     postLogin,
@@ -764,5 +801,6 @@ module.exports = {
     reset,
     getUserStore,
     postUserStore,
-    addStore
+    addStore,
+    createStore
 }

@@ -26,7 +26,7 @@ function generateStore() {
     type: ['restaurant', 'teppanyaki'],
     email: faker.internet.email(),
     phone: faker.phone.number('09########'),
-    description: '高品質鐵板燒料理，結合創意與傳統風味。',
+    description: '高品質鐵板燒料理，含有創新與特殊風味。',
     location: {
       lat,
       lng,

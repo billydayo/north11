@@ -762,6 +762,9 @@ async function createStore(req, res) {
       name, type, email, phone, description, location, businessHours
     } = req.body;
 
+    if (isUndefined(name) || isNotValidString(name) || isUndefined(location)) {
+      return res.status(400).json({ status: 'failed', message: '請提供正確的店名及位置' });
+    }
     const newStore = storeRepo.create({
       name,
       type: type || null,

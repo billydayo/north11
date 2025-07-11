@@ -813,6 +813,43 @@ async function deleteStore(req, res) {
   }
 }
 
+async function changeStoreOwner(req, res) {
+  try {
+    if (req.user.role !== 'store') {
+      return res.status(403).json({ status: 'failed', message: '沒有權限更換擁有者' });
+    }
+
+    const { storeId, newOwnerId } = req.body;
+    if (!storeId || !newOwnerId) {
+      return res.status(400).json({ status: 'failed', message: '請提供店家 ID 與新擁有者 ID' });
+    }
+
+    const storeRepo = dataSource.getRepository('Store');
+    const userRepo = dataSource.getRepository('User');
+
+    const store = await storeRepo.findOneBy({ id: storeId });
+    if (!store) {
+      return res.status(404).json({ status: 'failed', message: '找不到餐廳' });
+    }
+
+    const newOwner = await userRepo.findOneBy({ id: newOwnerId });
+    if (!newOwner) {
+      return res.status(404).json({ status: 'failed', message: '找不到新擁有者' });
+    }
+
+    //更新 owner_id
+    store.owner_id = newOwnerId;
+    await storeRepo.save(store);
+
+    res.json({ status: 'success', message: '已成功更換餐廳擁有者' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: 'failed', message: '伺服器錯誤' });
+  }
+
+}
+
 module.exports = {
     postSignup,
     postLogin,
@@ -830,5 +867,6 @@ module.exports = {
     postUserStore,
     addStore,
     createStore,
-    deleteStore
+    deleteStore,
+    changeStoreOwner
 }

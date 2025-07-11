@@ -836,7 +836,9 @@ async function changeStoreOwner(req, res) {
     if (!newOwner) {
       return res.status(404).json({ status: 'failed', message: '找不到新擁有者' });
     }
-
+    if (newOwner.role !== 'store') {
+      return res.status(400).json({ status: 'failed', message: '新擁有者必須是店家角色' });
+    }
     //更新 owner_id
     store.owner_id = newOwnerId;
     await storeRepo.save(store);

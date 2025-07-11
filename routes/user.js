@@ -37,6 +37,7 @@ router.get('/getstore', auth, users.getUserStore ); //查看店家擁有餐廳�
 router.post('/getstore', auth, users.postUserStore ); //編輯店家擁有餐廳資料
 router.post('/addstore', auth, users.addStore ); //讓店家擁有餐廳
 router.post('/createstore', auth, users.createStore ); //讓店家擁有餐廳
+router.delete('/store/:id', auth, users.deleteStore ); //店家刪除擁有餐廳
 //中間的auth代表是否需要驗證登入狀態
 router.get('/search/:search', (req, res) => {
     const searchs = req.params.search;

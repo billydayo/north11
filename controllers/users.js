@@ -786,6 +786,33 @@ async function createStore(req, res) {
   }
 }
 
+async function deleteStore(req, res) {
+  try {
+    // 身份驗證（只能店家）
+    if (req.user.role !== 'store') {
+      return res.status(403).json({ status: 'failed', message: '沒有權限刪除店家' });
+    }
+
+    const userId = req.user.id;
+    const storeId = req.params.id;  // 從 URL 參數取得餐廳 id
+    const storeRepo = dataSource.getRepository('Store');
+
+    // 檢查餐廳是否存在且是自己的
+    const store = await storeRepo.findOneBy({ id: storeId, owner_id: userId });
+    if (!store) {
+      return res.status(404).json({ status: 'failed', message: '找不到你的餐廳' });
+    }
+
+    // 刪除餐廳
+    await storeRepo.remove(store);
+
+    res.json({ status: 'success', message: '餐廳已刪除' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: 'failed', message: '伺服器錯誤' });
+  }
+}
+
 module.exports = {
     postSignup,
     postLogin,
@@ -802,5 +829,6 @@ module.exports = {
     getUserStore,
     postUserStore,
     addStore,
-    createStore
+    createStore,
+    deleteStore
 }

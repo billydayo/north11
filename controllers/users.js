@@ -769,7 +769,7 @@ async function createStore(req, res) {
       phone: phone || null,
       description: description || null,
       location,
-      businessHours,
+      businessHours: null,
       owner_id: userId,
       status: 'active'
     });
